@@ -1,0 +1,66 @@
+1，主机扫描
+2，路由扫描
+3，批量服务扫描
+4，linux防范二姨扫描安全策略
+
+主机扫描：
+fping:批量给目标主机发送ping命令
+首先从http://www.fping.org/下载对应系统版本的fping安装
+fping参数的介绍：
+-a：显示只存货的主机
+-u：显示没有存活的主机
+-g：支持段ip，192.168.1.1 192.168.1.255或，192.168.1.0/24
+-f：读取一个文件内的ip内容，fping -f filename
+
+hping：支持使用tcp/ip数据包组装、分析工具
+hping参数介绍：
+1，对特定目标端口发起tcp探测
+    -p:端口
+    -S:设置tcp模式SYN包
+2，伪造ip，模拟ddos攻击
+    -a:伪造ip地址。
+
+
+路由扫描
+作用：一个主机到另一个主机经过路由的跳数等情况
+常用工具：traceroute,mtr
+1，traceroute默认使用udp协议和三万以上的端口
+2，-T -p 使用tcp协议
+3，使用ICAM协议介绍 -I
+
+mtr可以显示路由上每个节点上的丢包等速率，即时显示
+
+批量主机扫描：
+1：针对主机存活
+2：针对主机服务
+nmap，ncat
+nmap有几种扫描方式：
+1：ICMP方式（相当于ping）
+2：TCP SYN方式
+3：TCP connection方式
+4：UPD扫描
+
+ncat：
+参数：-w设置超时时间
+     -z一个输入输出模式
+     -v命令执行过程
+方式1：默认基于tcp
+    nc -v -z -w2 ip 端口/范围
+    nc -v -u -z -w2 ....
+
+预防策略：
+    1：SYN攻击
+    2：DDOS攻击
+    3：恶意扫描
+   SYN类型DDOS攻击预防：
+    1，减少发送SYN+SCK包时的重试次数（临时性的）；
+    sysctl -w net.ipv4.tcp_synack_retries=3
+    sysctl -w net.ipv4.tcp_syn_retries=3
+    2，SYN cookies技术
+    sysctl -w net.ipv4.tcp_syncookies=1
+    3，增加backlog长度
+    sysctl -w net.ipv4.tcp_max_syn_backlog=2014
+
+    关闭ICMP协议请求
+    sysctl -w net.ipv4.icmp_echo_ignore_all=1
+    通过iptables放置扫描：
